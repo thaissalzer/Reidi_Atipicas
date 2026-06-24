@@ -694,38 +694,34 @@ def render_table(filtered: pd.DataFrame, source_name: str, model_name: str) -> N
     for _, row in filtered.iterrows():
         meta = ALERT_META[row["nivel_alerta"]]
         rows_html.append(
-            f"""
-            <tr style="background:{meta['bg']}">
-                <td class="table-rank">{int(row["ordem_fila"])}</td>
-                <td><span class="clip" title="{html.escape(str(row["empresa"]), quote=True)}">{html.escape(str(row["empresa"]))}</span></td>
-                <td><span class="mono">{html.escape(str(row["cnae"]))}</span></td>
-                <td><span class="clip" title="{html.escape(str(row["atividade"]), quote=True)}">{html.escape(str(row["atividade"]))}</span></td>
-                <td>{html.escape(format_probability_column(row["prob_nao_atipico"]))}</td>
-                <td><span class="pill" style="color:{meta['color']}; background:{meta['bg']};">{html.escape(str(row["nivel_alerta"]))}</span></td>
-                <td>{html.escape(format_currency(float(row["valor_beneficio"])))}</td>
-            </tr>
-            """
+            (
+                f'<tr style="background:{meta["bg"]}">'
+                f'<td class="table-rank">{int(row["ordem_fila"])}</td>'
+                f'<td><span class="clip" title="{html.escape(str(row["empresa"]), quote=True)}">{html.escape(str(row["empresa"]))}</span></td>'
+                f'<td><span class="mono">{html.escape(str(row["cnae"]))}</span></td>'
+                f'<td><span class="clip" title="{html.escape(str(row["atividade"]), quote=True)}">{html.escape(str(row["atividade"]))}</span></td>'
+                f'<td>{html.escape(format_probability_column(row["prob_nao_atipico"]))}</td>'
+                f'<td><span class="pill" style="color:{meta["color"]}; background:{meta["bg"]};">{html.escape(str(row["nivel_alerta"]))}</span></td>'
+                f'<td>{html.escape(format_currency(float(row["valor_beneficio"])))}</td>'
+                "</tr>"
+            )
         )
 
     headers = "".join(f"<th>{html.escape(label)}</th>" for label in DISPLAY_COLUMNS.values())
-    table_html = f"""
-    <div class="table-card">
-        <div class="table-shell">
-            <table class="ops-table">
-                <thead>
-                    <tr>{headers}</tr>
-                </thead>
-                <tbody>
-                    {''.join(rows_html)}
-                </tbody>
-            </table>
-        </div>
-        <div class="table-note">
-            A coloracao acompanha o mock SVG para acelerar a leitura visual da fila:
-            vermelho para alta prioridade, amarelo para media e verde para baixa.
-        </div>
-    </div>
-    """
+    table_html = (
+        '<div class="table-card">'
+        '<div class="table-shell">'
+        '<table class="ops-table">'
+        f"<thead><tr>{headers}</tr></thead>"
+        f"<tbody>{''.join(rows_html)}</tbody>"
+        "</table>"
+        "</div>"
+        '<div class="table-note">'
+        "A coloracao acompanha o mock SVG para acelerar a leitura visual da fila: "
+        "vermelho para alta prioridade, amarelo para media e verde para baixa."
+        "</div>"
+        "</div>"
+    )
     st.markdown(table_html, unsafe_allow_html=True)
 
 
